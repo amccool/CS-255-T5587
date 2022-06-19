@@ -1,0 +1,37 @@
+@startuml
+actor Administrator #red
+participant SecurityManager
+database SecurityDB
+participant CustomerManager
+database CustomerDB
+
+participant LessonManager
+database LessonDB
+
+Administrator -> SecurityManager:  Authentication Request
+SecurityManager -> SecurityDB: username/hashed password
+SecurityDB -> SecurityManager: boolean
+SecurityManager -> Administrator: Authentication Response
+
+Administrator -> CustomerManager: CreateCustomer
+CustomerManager -> CustomerDB: customer record
+CustomerDB -> CustomerManager: customer record with PK
+CustomerManager -> Administrator: Customer
+
+Administrator -> LessonManager: ScheduleLesson request
+activate LessonManager
+LessonManager -> Administrator: lesson object
+
+
+Administrator -> LessonManager: availabledriver request
+LessonManager -> Administrator: available drivers
+
+Administrator -> LessonManager: assign driver request
+LessonManager -> LessonDB: lesson record
+LessonDB -> LessonManager: lesson record w PK
+LessonManager --> AlertManager : notify customer
+LessonManager --> AlertManager : notify driver
+LessonManager -> Administrator: void
+destroy LessonManager
+
+@enduml
